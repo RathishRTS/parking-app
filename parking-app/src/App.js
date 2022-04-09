@@ -1,15 +1,26 @@
-import logo from './logo.svg';
-// import './App.css';
 import 'antd/dist/antd.css';
-import Welcome from './components/Welcome';
 import { useState } from 'react';
-import Options from './components/Options';
 import { Button } from 'antd';
+
+import Welcome from './components/Welcome';
+import Options from './components/Options';
 import Checkin from './components/Checkin';
+import Lots from './components/Lots';
+import Find from './components/Find';
+import Checkout from './components/Checkout';
 
 function App() {
 
     const [screen, setScreen] = useState('welcome')
+
+    const [parking, setParking] = useState({
+        'A': [],
+        'B': [],
+        'C': [],
+        'D': []
+    })
+
+    const [history, setHistory] = useState({})
 
     return (
         <div className="App">
@@ -29,9 +40,21 @@ function App() {
                         :
                         screen==='checkin'
                         ?
-                        <Checkin setScreen={setScreen} />
+                        <Checkin setScreen={setScreen} parking={parking} setParking={setParking} history={history} setHistory={setHistory} />
                             :
-                            <></>
+                            screen==='lots'
+                            ?
+                            <Lots setScreen={setScreen} parking={parking} />
+                                :
+                                screen==='find'
+                                ?
+                                <Find history={history} />
+                                    :
+                                    screen==='checkout'
+                                    ?
+                                    <Checkout history={history} />
+                                        :
+                                        <></>
             }     
         </div>
     );

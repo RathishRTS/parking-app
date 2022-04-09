@@ -1,16 +1,50 @@
-import { Button, Form, Input, Radio } from 'antd';
+import { Button, Form, Input, Radio, TimePicker, message } from 'antd';
+import { cloneDeep } from 'lodash';
 import React, { useState } from 'react';
 
-function Checkin() {
+const success = (msg) => {
+    message.success(msg);
+};
+
+const error = (msg) => {
+    message.error(msg);
+};
+
+function Checkin({parking, setParking, history, setHistory}) {
 
     const [num, setNum] = useState('');
     const [vtype, setVtype] = useState();
     const [lot, setLot] = useState('');
     const [checkin, setCheckin] = useState('');
 
+    function checkIn() {
+        console.log(num, vtype, lot, checkin)
+        // Lot input validation
+        if (!['A', 'B', 'C', 'D'].includes(lot)) {
+            error(`Invalid lot - ${lot}`)
+        } else {
+            let vehicleToBeParked = { num, vtype, lot, checkin }
+            let parkingData = cloneDeep(parking);
+            parkingData[lot].push(vehicleToBeParked)
+            setParking(parkingData)
+    
+            let historyData = cloneDeep(history)
+            let vehicleHistory = historyData[num];
+            if (vehicleHistory) {
+                vehicleHistory.push({lot, checkin})
+            } else {
+                vehicleHistory = [{floor: lot, checkin, key: checkin}]
+            }
+            historyData[num] = vehicleHistory
+            setHistory(historyData)
+
+            success(`${vtype} - ${num} parked at lot ${lot}`)
+        }
+    }
+
     return (
         <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-            <div style={{fontSize: 30, fontWeight: 'bold'}}>CHECK IN</div>
+            <div style={{fontSize: 30, fontWeight: 'bold', marginBottom: 30}}>CHECK IN</div>
 
             <Form>
                 <Form.Item label='Vehicle Number'>
@@ -20,7 +54,6 @@ function Checkin() {
                     <Radio.Group 
                         options={[
                             {
-                                // label: () => (<img src={'https://png.pngtree.com/element_our/sm/20180516/sm_5afbf1d28feb1.png'} style={{height: 60, width: 60}} />),
                                 label: 'Car',
                                 value: 'car'
                             },
@@ -37,12 +70,15 @@ function Checkin() {
                     <Input onChange={(e) => setLot(e.target.value)} value={lot} />
                 </Form.Item>
                 <Form.Item label='CheckIn Time'>
-                    <Input onChange={(e) => setCheckin(e.target.value)} value={checkin} />
+                    <TimePicker use12Hours format="h:mm a" onChange={(time, timeString) => {
+                        // console.log(time, timeString);
+                        setCheckin(timeString)
+                    }} />
                 </Form.Item>
             </Form>
 
 
-            <Button type='primary'>CHECK IN</Button>
+            <Button type='primary' onClick={checkIn}>CHECK IN</Button>
         </div>
     )
 }
