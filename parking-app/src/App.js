@@ -52,7 +52,7 @@ function App() {
                                     :
                                     screen==='checkout'
                                     ?
-                                    <Checkout history={history} />
+                                    <Checkout history={history} setHistory={setHistory} parking={parking} setParking={setParking} />
                                         :
                                         <></>
             }     

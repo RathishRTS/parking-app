@@ -33,7 +33,7 @@ function Checkin({parking, setParking, history, setHistory}) {
             if (vehicleHistory) {
                 vehicleHistory.push({lot, checkin})
             } else {
-                vehicleHistory = [{floor: lot, checkin, key: checkin}]
+                vehicleHistory = [{floor: lot, checkin, key: checkin, vtype}]
             }
             historyData[num] = vehicleHistory
             setHistory(historyData)
