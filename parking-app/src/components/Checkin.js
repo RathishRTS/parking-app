@@ -23,22 +23,31 @@ function Checkin({parking, setParking, history, setHistory}) {
         if (!['A', 'B', 'C', 'D'].includes(lot)) {
             error(`Invalid lot - ${lot}`)
         } else {
-            let vehicleToBeParked = { num, vtype, lot, checkin }
             let parkingData = cloneDeep(parking);
-            parkingData[lot].push(vehicleToBeParked)
-            setParking(parkingData)
-    
-            let historyData = cloneDeep(history)
-            let vehicleHistory = historyData[num];
-            if (vehicleHistory) {
-                vehicleHistory.push({lot, checkin})
-            } else {
-                vehicleHistory = [{floor: lot, checkin, key: checkin, vtype}]
+            if (parkingData[lot].length>=10){
+                error(`Lot - ${lot} is Full`)
             }
-            historyData[num] = vehicleHistory
-            setHistory(historyData)
+            else{
+                let vehicleToBeParked = { num, vtype, lot, checkin }
+                
+                parkingData[lot].push(vehicleToBeParked)
+                setParking(parkingData)
+        
+                let historyData = cloneDeep(history)
+                let vehicleHistory = historyData[num];
+                if (vehicleHistory) {
+                    vehicleHistory.push({lot, checkin})
+                } else {
+                    vehicleHistory = [{floor: lot, checkin, key: checkin, vtype}]
+                }
+                historyData[num] = vehicleHistory
+                setHistory(historyData)
+    
+                success(`${vtype} - ${num} parked at lot ${lot}`)
+            }
 
-            success(`${vtype} - ${num} parked at lot ${lot}`)
+
+            
         }
     }
 
